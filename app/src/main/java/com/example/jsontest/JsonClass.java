@@ -120,4 +120,25 @@ public class JsonClass {
         arr.add(obj);
         AddObjToJson(mainKey, arr, false);
     }
+
+    public String[] ReadValuesFromJFile(String mainkey){
+        JsonArray arr = ReadJArrayFromJson(mainkey);
+        String[] values = new String[arr.size()];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = arr.get(i).toString();
+            return values;
+        }
+        String[] str = {""};
+        return str;
+    }
+
+    public String GetValueFromJArray(String mainkey, int index){
+        JsonArray arr = ReadJArrayFromJson(mainkey);
+        return arr.get(index).toString();
+    }
+
+    public int GetArraySize(String mainkey){
+        JsonArray arr = ReadJArrayFromJson(mainkey);
+        return arr.size();
+    }
 }
