@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import org.json.JSONArray;
+import com.google.gson.JsonElement;
 
 public class MainActivity extends AppCompatActivity {
     JsonClass jclass;
@@ -17,8 +17,8 @@ public class MainActivity extends AppCompatActivity {
         tv = (TextView)findViewById(R.id.tv1);
         jclass = new JsonClass(this);
         jclass.InitializeJFile("Categories");
-        jclass.AddObjToJArray("Categories", "categories", "cat1");
-        jclass.AddObjToJArray("Categories", "categories", "cat2");
-        tv.setText(jclass.ReadJObjectFromJson());
+        jclass.AddObjToJArray("Categories", "category", "cat1");
+        jclass.AddObjToJArray("Categories", "category", "cat21");
+        tv.setText(jclass.ReadJObjectFromJson().toString());
     }
 }

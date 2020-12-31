@@ -3,6 +3,10 @@ package com.example.jsontest;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,17 +33,15 @@ public class JsonClass {
     }
 
     public void InitializeJFile(String key){
-        AddObjToJson(key, new JSONArray(), false);
+            AddObjToJson(key, new JsonArray(), false);
     }
 
-    public String CreateNewJObject(String key, Object value){
+    public String CreateNewJObject(String key, JsonElement value){
         Gson gson = new Gson();
         String Jstring = null;
-        try {
-            Jstring = gson.toJson(new JSONObject().put(key,value));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JsonObject obj = new JsonObject();
+        obj.add(key, value);
+        Jstring = gson.toJson(obj);
         return Jstring;
     }
 
@@ -90,40 +92,32 @@ public class JsonClass {
         }
     }
 
-    public String ReadJObjectFromJson(){
+    public JsonObject ReadJObjectFromJson(){
         Gson gson = new Gson();
-        JSONObject obj = gson.fromJson(ReadJson(),JSONObject.class);
-        return obj.toString();
+        JsonObject obj = gson.fromJson(ReadJson(), JsonObject.class);
+        return obj;
     }
 
-    public String ReadJArrayFromJson(String mainkey) {
+    public JsonArray ReadJArrayFromJson(String mainkey) {
         Gson gson = new Gson();
-        JSONObject obj = gson.fromJson(ReadJObjectFromJson(), JSONObject.class);
-        JSONArray arr = null;
-        try {
-            arr = (JSONArray) obj.get(mainkey);
-            return arr.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+        JsonObject obj = ReadJObjectFromJson();
+        JsonArray arr = null;
+        if (obj.has(mainkey))
+            arr = obj.getAsJsonArray(mainkey);
+        return arr;
     }
 
-    public void AddObjToJson(String key, Object value, boolean flag){
+    public void AddObjToJson(String key, JsonElement value, boolean flag){
         String newJObjectString = CreateNewJObject(key, value);
         WriteJson(newJObjectString, flag);
     }
 
-    public void AddObjToJArray(String mainKey, String key, Object value){
+    public void AddObjToJArray(String mainKey, String key, String value){
         Gson gson = new Gson();
-        JSONArray arr = gson.fromJson(ReadJArrayFromJson(mainKey), JSONArray.class);
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put(key,value);
-            arr.put(obj);
-            AddObjToJson(mainKey, arr, false);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JsonArray arr = ReadJArrayFromJson(mainKey);
+        JsonObject obj = new JsonObject();
+        obj.add(key,gson.toJsonTree(value));
+        arr.add(obj);
+        AddObjToJson(mainKey, arr, false);
     }
 }
